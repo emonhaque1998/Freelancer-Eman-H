@@ -1,12 +1,18 @@
 
 {
   "cleanUrls": true,
-  "routes": [
-    { "src": "/sitemap", "dest": "/sitemap.xml" },
-    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
-    { "src": "/robots.txt", "dest": "/robots.txt" },
-    { "src": "/favicon.ico", "dest": "/favicon.ico" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    {
+      "source": "/sitemap",
+      "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/(robots.txt|sitemap.xml|favicon.ico)",
+      "destination": "/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
