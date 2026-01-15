@@ -157,8 +157,27 @@ export default function App() {
       const savedUser = localStorage.getItem('devport_session_user');
       if (savedUser) setAuthState({ user: JSON.parse(savedUser), token: 'token', isAuthenticated: true, isLoading: false });
       else setAuthState(p => ({ ...p, isLoading: false }));
+      
       const loc = await detectLocation();
       setLocation(loc);
+
+      // Fetch dynamic branding assets (like favicon)
+      try {
+        const about = await db.getAbout();
+        if (about.faviconUrl) {
+          const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+          if (link) {
+            link.href = about.faviconUrl;
+          } else {
+            const newLink = document.createElement('link');
+            newLink.rel = 'icon';
+            newLink.href = about.faviconUrl;
+            document.head.appendChild(newLink);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load global branding:", err);
+      }
     };
     init();
   }, []);

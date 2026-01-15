@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { db, UPLOADTHING_CONFIG } from '../services/db';
 import { AboutData } from '../types';
-import { CloudUpload, ExternalLink, ShieldCheck, Image as ImageIcon, CheckCircle2, Info, Monitor, Cpu } from 'lucide-react';
+import { CloudUpload, ExternalLink, ShieldCheck, Image as ImageIcon, CheckCircle2, Info, Monitor, Cpu, Globe } from 'lucide-react';
 
 export const AdminAbout: React.FC = () => {
   const [formData, setFormData] = useState<AboutData | null>(null);
@@ -30,7 +30,12 @@ export const AdminAbout: React.FC = () => {
     setSaving(true);
     try {
       await db.updateAbout(formData);
-      alert("Brand synchronization successful! All images are now live.");
+      // Trigger favicon update in real-time for current session
+      if (formData.faviconUrl) {
+        const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+        if (link) link.href = formData.faviconUrl;
+      }
+      alert("Brand synchronization successful! All images and favicon are now live.");
     } catch (err) {
       alert("Failed to sync brand data.");
     } finally {
@@ -79,7 +84,7 @@ export const AdminAbout: React.FC = () => {
              <h3 className="text-indigo-600 font-bold uppercase tracking-widest text-xs">Visual Media Hub</h3>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-4 gap-8">
             {/* Asset 1: Profile */}
             <div className="space-y-4">
               <label className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase ml-1">
@@ -148,12 +153,38 @@ export const AdminAbout: React.FC = () => {
                 placeholder="Paste UTFS URL..." 
               />
             </div>
+
+            {/* Asset 4: Favicon */}
+            <div className="space-y-4">
+              <label className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase ml-1">
+                <Globe size={14} /> Site Favicon
+              </label>
+              <div className="aspect-square rounded-[32px] overflow-hidden bg-slate-900 border-4 border-slate-800 group relative flex items-center justify-center p-8">
+                {formData.faviconUrl && !formData.faviconUrl.includes('placeholder') ? (
+                  <div className="relative group/fav">
+                    <img src={formData.faviconUrl} className="w-16 h-16 object-contain rounded-lg shadow-2xl transition duration-500 group-hover/fav:scale-125" alt="Favicon" />
+                    <div className="absolute -top-12 -left-4 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-[8px] font-bold text-white opacity-0 group-hover/fav:opacity-100 transition-opacity">Browser Preview</div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-slate-700">
+                    <Globe size={40} strokeWidth={1} />
+                    <p className="text-[10px] mt-2 font-black">Small Square Icon</p>
+                  </div>
+                )}
+              </div>
+              <input 
+                value={formData.faviconUrl || ''} 
+                onChange={e => setFormData({...formData, faviconUrl: e.target.value})} 
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 border-none outline-none text-[10px] font-mono text-indigo-600 shadow-inner" 
+                placeholder="Paste UTFS .ico/.png URL..." 
+              />
+            </div>
           </div>
           
           <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex items-start gap-3">
             <Info className="text-indigo-600 shrink-0 mt-0.5" size={16} />
             <p className="text-xs text-indigo-700 font-medium">
-              <b>Commit Successful:</b> Credentials are now managed via Environment Variables. Ensure <code>UPLOADTHING_SECRET</code> is set in your host settings.
+              <b>Favicon Note:</b> For best results, use a 32x32 or 64x64 PNG or ICO file. After saving, you may need to refresh the browser to see the tab icon change.
             </p>
           </div>
         </section>

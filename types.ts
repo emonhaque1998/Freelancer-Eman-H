@@ -32,6 +32,7 @@ export interface AboutData {
   imageUrl: string;
   workspaceImageUrl?: string;
   hardwareImageUrl?: string;
+  faviconUrl?: string;
 }
 
 export interface LocationData {
