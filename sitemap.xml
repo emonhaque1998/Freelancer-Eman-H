@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.emanhaque.com/</loc>
+    <loc>https://emanhaque.dev/</loc>
     <lastmod>2024-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.emanhaque.com/about</loc>
+    <loc>https://emanhaque.dev/about</loc>
     <lastmod>2024-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.emanhaque.com/services</loc>
+    <loc>https://emanhaque.dev/services</loc>
     <lastmod>2024-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.emanhaque.com/projects</loc>
+    <loc>https://emanhaque.dev/projects</loc>
     <lastmod>2024-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.emanhaque.com/contact</loc>
+    <loc>https://emanhaque.dev/contact</loc>
     <lastmod>2024-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

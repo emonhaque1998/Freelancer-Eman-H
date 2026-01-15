@@ -22,7 +22,6 @@ const Services = lazy(() => import('./pages/Services').then(m => ({ default: m.S
 const ProjectSingle = lazy(() => import('./pages/ProjectSingle').then(m => ({ default: m.ProjectSingle })));
 const About = lazy(() => import('./pages/About').then(m => ({ default: m.About })));
 const Contact = lazy(() => import('./pages/Contact').then(m => ({ default: m.Contact })));
-const NotFound = lazy(() => import('./pages/NotFound').then(m => ({ default: m.NotFound })));
 
 // Lazy load User Dashboard pages
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
@@ -144,7 +143,6 @@ function RoutesContainer({ authState, onUserUpdate, handleAuthSuccess }: { authS
           <Route path="about-me" element={<AdminAbout />} />
           <Route path="seo" element={<AdminSEO />} />
         </Route>
-        <Route path="*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
       </Routes>
     </AnimatePresence>
   );
