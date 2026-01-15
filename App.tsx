@@ -188,6 +188,29 @@ export default function App() {
           updateMeta('google-site-verification', about.googleConsoleToken, 'name');
         }
 
+        // Custom Raw HTML Meta/Script injection
+        if (about.googleCustomHtml) {
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = about.googleCustomHtml;
+          const nodes = Array.from(tempDiv.childNodes);
+          nodes.forEach(node => {
+            if (node.nodeType === 1) { // Element node
+              const el = node as HTMLElement;
+              // Avoid duplicates based on name/property if it's a meta
+              if (el.tagName === 'META') {
+                const name = el.getAttribute('name');
+                const prop = el.getAttribute('property');
+                const selector = name ? `meta[name='${name}']` : prop ? `meta[property='${prop}']` : null;
+                if (selector) {
+                  const existing = document.querySelector(selector);
+                  if (existing) existing.remove();
+                }
+              }
+              document.head.appendChild(el.cloneNode(true));
+            }
+          });
+        }
+
         // Update Social Share Meta Tags
         if (about.seoThumbnailUrl) {
           updateMeta('og:image', about.seoThumbnailUrl);

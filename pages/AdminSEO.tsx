@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../services/db';
 import { AboutData } from '../types';
 import { toast } from 'react-toastify';
-import { Search, Globe, Share2, Info, ExternalLink, Save, CheckCircle2, Terminal, ShieldCheck } from 'lucide-react';
+import { Search, Globe, Share2, Info, ExternalLink, Save, CheckCircle2, Code, ShieldCheck, AlertCircle } from 'lucide-react';
 
 export const AdminSEO: React.FC = () => {
   const [formData, setFormData] = useState<AboutData | null>(null);
@@ -46,10 +46,10 @@ export const AdminSEO: React.FC = () => {
 
       <form onSubmit={handleSave} className="space-y-8">
         
-        {/* Modern Google Connectivity Hub */}
+        {/* Custom HTML Meta Hub */}
         <div className="bg-white p-10 rounded-[40px] border border-indigo-100 shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 p-10 opacity-5 text-indigo-600">
-            <Search size={140} />
+            <Code size={140} />
           </div>
           
           <div className="flex items-center gap-4 mb-10">
@@ -57,8 +57,8 @@ export const AdminSEO: React.FC = () => {
               <ShieldCheck size={28} />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-slate-900">Google Console Connectivity</h3>
-              <p className="text-xs text-indigo-600 font-bold uppercase tracking-widest">Ownership Verification</p>
+              <h3 className="text-2xl font-black text-slate-900">Advanced SEO & Verification</h3>
+              <p className="text-xs text-indigo-600 font-bold uppercase tracking-widest">Custom HTML Meta Tags</p>
             </div>
           </div>
 
@@ -66,37 +66,29 @@ export const AdminSEO: React.FC = () => {
             <div className="space-y-6">
               <div className="p-6 bg-slate-50 rounded-3xl border border-slate-200">
                 <h4 className="text-sm font-black text-slate-800 mb-3 flex items-center gap-2">
-                  <Terminal size={16} className="text-indigo-600" /> Token Verification Guide:
+                  <Info size={16} className="text-indigo-600" /> ব্যবহারের নিয়ম:
                 </h4>
-                <ul className="text-xs text-slate-500 space-y-3 list-disc ml-4 font-medium">
-                  <li>Open <a href="https://search.google.com/search-console" target="_blank" className="text-indigo-600 underline font-bold">Google Search Console</a>.</li>
-                  <li>Choose your property and go to <b>Settings &rarr; Verification</b>.</li>
-                  <li>Select <b>"HTML Tag"</b> method.</li>
-                  <li>Copy the <b>content</b> value (this is your TXT Token).</li>
-                  <li>Paste it into the field on the right.</li>
-                </ul>
+                <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                  গুগল বা অন্যান্য প্ল্যাটফর্ম থেকে আপনাকে যে মেটা ট্যাগ বা এইচটিএমএল কোড দেওয়া হবে, তা সরাসরি ডানপাশের ঘরে বসান। আপনি চাইলে একাধিক ট্যাগ ও বসাতে পারেন। 
+                  <br /><br />
+                  <b>উদাহরণ:</b><br />
+                  <code className="text-indigo-600 break-all">&lt;meta name="google-site-verification" content="TOKEN_HERE" /&gt;</code>
+                </p>
               </div>
-              <a 
-                href="https://search.google.com/search-console" 
-                target="_blank" 
-                className="inline-flex items-center gap-2 text-xs font-black bg-slate-900 text-white px-8 py-4 rounded-2xl hover:bg-indigo-600 transition shadow-lg"
-              >
-                Access Google Console <ExternalLink size={14} />
-              </a>
             </div>
 
             <div className="space-y-6">
                <div className="bg-indigo-50/50 p-8 rounded-[32px] border border-indigo-100">
-                  <label className="block text-[10px] font-black text-indigo-400 uppercase mb-3 ml-1">Verification Token / Content ID</label>
-                  <input 
-                    value={formData.googleConsoleToken || ''} 
-                    onChange={e => setFormData({...formData, googleConsoleToken: e.target.value})}
-                    placeholder="Example: pR_7Tj7v0W6-k2m..."
+                  <label className="block text-[10px] font-black text-indigo-400 uppercase mb-3 ml-1">Paste Raw HTML Meta Tags Here</label>
+                  <textarea 
+                    rows={6}
+                    value={formData.googleCustomHtml || ''} 
+                    onChange={e => setFormData({...formData, googleCustomHtml: e.target.value})}
+                    placeholder='<meta name="google-site-verification" content="..." />'
                     className="w-full px-6 py-5 rounded-2xl bg-white border-2 border-transparent focus:border-indigo-500 outline-none transition font-mono text-xs shadow-sm text-indigo-900"
                   />
                   <p className="text-[9px] text-slate-400 mt-4 italic font-medium">
-                    * The system will automatically inject this as: <br />
-                    <code className="text-indigo-600">&lt;meta name="google-site-verification" content="..." /&gt;</code>
+                    * This HTML will be injected directly into the &lt;head&gt; of your website.
                   </p>
                </div>
             </div>
