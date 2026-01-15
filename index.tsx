@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 
 /**
- * Entry point for the Eman Haque Professional Portfolio & CMS.
+ * Entry point for the Eman Haque Professional Developer Platform & CMS.
  * This file mounts the main App component into the #root element defined in index.html.
  */
 const container = document.getElementById('root');
