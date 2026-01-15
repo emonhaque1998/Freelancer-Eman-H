@@ -61,15 +61,15 @@ class FirebaseDB {
         const defaultAbout: AboutData = {
           id: 'me',
           name: 'Eman Haque',
-          title: 'Full Stack Developer',
-          overview: 'I transform complex problems into elegant digital solutions.',
-          bio: 'I am a passionate B.Sc Graduate specialized in high-performance web applications and hardware engineering.',
-          vision: 'Bridging the gap between human needs and technical possibilities.',
-          skills: ['React', 'Node.js', 'TypeScript', 'Firebase', 'Hardware Engineering'],
-          values: ['Clean Code', 'Integrity', 'Continuous Innovation'],
+          title: 'Laravel, WordPress & Full-Stack Developer',
+          overview: 'Expert web development specialized in Laravel framework, WordPress CMS, and high-performance custom applications.',
+          bio: 'I am a passionate B.Sc Graduate in Computer Science specialized in building high-conversion WordPress websites and scalable Laravel enterprise solutions.',
+          vision: 'Empowering businesses with modern, SEO-optimized, and lightning-fast web technologies.',
+          skills: ['Laravel', 'WordPress', 'React', 'Node.js', 'PHP', 'Custom Web Development'],
+          values: ['SEO Optimization', 'Clean Architecture', 'Client Satisfaction'],
           experience_years: '2+',
           projects_count: '25+',
-          education: 'B.Sc in Computer Science',
+          education: 'B.Sc in Computer Science & Engineering',
           location: 'Dhaka, Bangladesh',
           email: 'admin@devport.com',
           imageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-profile.png`,
@@ -88,6 +88,39 @@ class FirebaseDB {
             imageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-project.png`,
             createdAt: Timestamp.now()
           });
+        }
+      }
+
+      const serviceCheck = await getDocs(query(collection(firestore, 'services'), limit(1)));
+      if (serviceCheck.empty) {
+        const defaultServices: Service[] = [
+          {
+            id: 'wp-service',
+            title: 'WordPress Development',
+            description: 'Custom theme and plugin development optimized for speed, security, and SEO.',
+            price: 'Starts at $299',
+            icon: '🎨',
+            features: ['Custom Themes', 'Plugin Development', 'SEO Optimization', 'Speed Tuning']
+          },
+          {
+            id: 'laravel-service',
+            title: 'Laravel Solutions',
+            description: 'Scalable and secure enterprise-grade applications built with the Laravel framework.',
+            price: 'Starts at $499',
+            icon: '💎',
+            features: ['API Development', 'Custom CRM/SaaS', 'Database Design', 'Secure Logic']
+          },
+          {
+            id: 'web-dev-service',
+            title: 'Full Stack Development',
+            description: 'Modern, responsive web applications using the latest JavaScript frameworks and Node.js.',
+            price: 'Starts at $399',
+            icon: '🚀',
+            features: ['React Applications', 'Node.js Backend', 'Responsive Design', 'Cloud Deployment']
+          }
+        ];
+        for (const s of defaultServices) {
+          await setDoc(doc(firestore, 'services', s.id), s);
         }
       }
 

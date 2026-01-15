@@ -40,14 +40,13 @@ export const Home: React.FC = () => {
             >
               <motion.div variants={itemVariants} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
                 <span className="flex h-2 w-2 rounded-full bg-indigo-500 mr-2 animate-ping"></span>
-                Available for new opportunities
+                Expert Laravel & WordPress Developer
               </motion.div>
               <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 leading-tight">
-                Building the Next Generation of <span className="text-indigo-600">Web Experiences</span>.
+                High-Performance <span className="text-indigo-600">Web Development</span>.
               </motion.h1>
               <motion.p variants={itemVariants} className="text-xl text-slate-600 max-w-lg leading-relaxed font-medium">
-                I'm a B.Sc Graduate Web Developer specialized in creating modern, 
-                high-performance applications with React, Node.js, and clean architecture.
+                I'm a B.Sc Graduate specialized in creating custom <span className="text-indigo-600 font-bold">Laravel</span> applications, high-converting <span className="text-indigo-600 font-bold">WordPress</span> sites, and modern full-stack experiences.
               </motion.p>
               <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -55,7 +54,7 @@ export const Home: React.FC = () => {
                     to="/projects"
                     className="px-8 py-4 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition shadow-xl shadow-indigo-100 block"
                   >
-                    View My Work
+                    View Laravel & WP Work
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -63,7 +62,7 @@ export const Home: React.FC = () => {
                     to="/contact"
                     className="px-8 py-4 bg-white text-slate-900 font-black border border-slate-200 rounded-2xl hover:bg-slate-50 transition block"
                   >
-                    Let's Talk
+                    Get a Free Quote
                   </Link>
                 </motion.div>
               </motion.div>
@@ -79,7 +78,7 @@ export const Home: React.FC = () => {
               {about?.imageUrl ? (
                 <img
                   src={about.imageUrl}
-                  alt="Developer Profile"
+                  alt="Eman Haque - Web Development Expert"
                   className="relative rounded-[40px] shadow-2xl border border-white transition duration-700 group-hover:scale-[1.02] aspect-square object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -103,7 +102,7 @@ export const Home: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-sm font-black text-slate-900">B.Sc Graduated</div>
-                  <div className="text-xs text-slate-500 font-bold">Computer Science Major</div>
+                  <div className="text-xs text-slate-500 font-bold">SEO-First Engineering</div>
                 </div>
               </motion.div>
             </motion.div>
@@ -120,8 +119,8 @@ export const Home: React.FC = () => {
       >
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-indigo-600 font-black uppercase tracking-[0.2em] text-sm mb-4">Technical Proficiency</h2>
-            <h3 className="text-4xl font-black text-slate-900">My Expert <span className="text-indigo-600">Tech Stack.</span></h3>
+            <h2 className="text-indigo-600 font-black uppercase tracking-[0.2em] text-sm mb-4">Core Competencies</h2>
+            <h3 className="text-4xl font-black text-slate-900">Professional <span className="text-indigo-600">Tech Arsenal.</span></h3>
           </div>
 
           <motion.div 
@@ -146,6 +145,27 @@ export const Home: React.FC = () => {
         </div>
       </motion.section>
 
+      {/* SEO Content Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-12">
+            <div className="space-y-4">
+                <div className="text-3xl">🧩</div>
+                <h4 className="text-xl font-bold text-slate-900">WordPress Expert</h4>
+                <p className="text-slate-500 text-sm leading-relaxed">Custom theme and plugin development optimized for core web vitals and search rankings.</p>
+            </div>
+            <div className="space-y-4">
+                <div className="text-3xl">⚙️</div>
+                <h4 className="text-xl font-bold text-slate-900">Laravel Solutions</h4>
+                <p className="text-slate-500 text-sm leading-relaxed">Developing secure, scalable, and complex web systems with the industry-leading PHP framework.</p>
+            </div>
+            <div className="space-y-4">
+                <div className="text-3xl">💻</div>
+                <h4 className="text-xl font-bold text-slate-900">Custom Development</h4>
+                <p className="text-slate-500 text-sm leading-relaxed">Tailored web solutions from landing pages to enterprise SaaS platforms using modern stacks.</p>
+            </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
@@ -156,16 +176,16 @@ export const Home: React.FC = () => {
             className="bg-slate-900 rounded-[60px] p-12 md:p-20 text-center relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -mr-32 -mt-32"></div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-8">Ready to start your <span className="text-indigo-400">next project?</span></h2>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-8">Elevate your business with <span className="text-indigo-400">Premium Code.</span></h2>
             <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto font-medium">
-              Let's build something exceptional together. Available for worldwide collaborations.
+              WordPress, Laravel, or Custom Full-Stack. Available for global remote contracts and collaborative development.
             </p>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
               <Link 
                 to="/contact" 
                 className="px-12 py-5 bg-indigo-600 text-white font-black rounded-2xl shadow-2xl shadow-indigo-900/40 hover:bg-indigo-700 transition flex items-center gap-3"
               >
-                Get in Touch <ArrowRight size={20} />
+                Hire Now <ArrowRight size={20} />
               </Link>
             </motion.div>
           </motion.div>
