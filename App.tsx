@@ -40,9 +40,6 @@ const AdminAbout = lazy(() => import('./pages/AdminAbout').then(m => ({ default:
 const AdminSEO = lazy(() => import('./pages/AdminSEO').then(m => ({ default: m.AdminSEO })));
 const AdminProfile = lazy(() => import('./pages/AdminProfile').then(m => ({ default: m.AdminProfile })));
 
-/**
- * AnimatedRoute component wraps routes with motion animations.
- */
 const AnimatedRoute = ({ children }: { children?: React.ReactNode }) => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
@@ -181,7 +178,11 @@ export default function App() {
             document.head.appendChild(meta);
           }
           meta.setAttribute('content', content);
+          meta.setAttribute('data-injected', 'true');
         };
+
+        // Clear existing injected tags to prevent duplicates before re-injecting
+        document.querySelectorAll('meta[data-injected="true"]').forEach(el => el.remove());
 
         // Google Site Verification (Standard Token injection)
         if (about.googleConsoleToken) {
@@ -191,27 +192,35 @@ export default function App() {
         // Custom Raw HTML Meta/Script injection
         if (about.googleCustomHtml) {
           const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = about.googleCustomHtml;
-          const nodes = Array.from(tempDiv.childNodes);
-          nodes.forEach(node => {
-            if (node.nodeType === 1) { // Element node
+          tempDiv.innerHTML = about.googleCustomHtml.trim();
+          
+          // Efficiently inject all children
+          while (tempDiv.firstChild) {
+            const node = tempDiv.firstChild;
+            if (node.nodeType === 1) { // Only Element nodes (meta, script, etc)
               const el = node as HTMLElement;
-              // Avoid duplicates based on name/property if it's a meta
+              
+              // Handle duplicates by name or property if it's a meta tag
               if (el.tagName === 'META') {
                 const name = el.getAttribute('name');
                 const prop = el.getAttribute('property');
                 const selector = name ? `meta[name='${name}']` : prop ? `meta[property='${prop}']` : null;
+                
                 if (selector) {
                   const existing = document.querySelector(selector);
                   if (existing) existing.remove();
                 }
               }
-              document.head.appendChild(el.cloneNode(true));
+              
+              el.setAttribute('data-injected', 'true');
+              document.head.appendChild(el);
+            } else {
+              tempDiv.removeChild(node);
             }
-          });
+          }
         }
 
-        // Update Social Share Meta Tags
+        // Standard SEO Meta Tags
         if (about.seoThumbnailUrl) {
           updateMeta('og:image', about.seoThumbnailUrl);
           updateMeta('og:title', about.title);
