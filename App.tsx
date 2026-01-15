@@ -37,6 +37,7 @@ const AdminServices = lazy(() => import('./pages/AdminServices').then(m => ({ de
 const AdminMessages = lazy(() => import('./pages/AdminMessages').then(m => ({ default: m.AdminMessages })));
 const AdminInquiries = lazy(() => import('./pages/AdminInquiries').then(m => ({ default: m.AdminInquiries })));
 const AdminAbout = lazy(() => import('./pages/AdminAbout').then(m => ({ default: m.AdminAbout })));
+const AdminSEO = lazy(() => import('./pages/AdminSEO').then(m => ({ default: m.AdminSEO })));
 const AdminProfile = lazy(() => import('./pages/AdminProfile').then(m => ({ default: m.AdminProfile })));
 
 /**
@@ -143,6 +144,7 @@ function RoutesContainer({ authState, onUserUpdate, handleAuthSuccess }: { authS
           <Route path="messages" element={<AdminMessages />} />
           <Route path="inquiries" element={<AdminInquiries />} />
           <Route path="about-me" element={<AdminAbout />} />
+          <Route path="seo" element={<AdminSEO />} />
         </Route>
       </Routes>
     </AnimatePresence>

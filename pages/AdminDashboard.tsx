@@ -23,6 +23,7 @@ export const AdminDashboard: React.FC = () => {
     { label: 'Users', path: 'users', icon: '👥' },
     { label: 'Admin Profile', path: 'profile', icon: '🆔' },
     { label: 'Manage About', path: 'about-me', icon: '👤' },
+    { label: 'SEO Settings', path: 'seo', icon: '🔍' },
     { label: 'Projects', path: 'projects', icon: '📁' },
     { label: 'Services', path: 'services', icon: '🛠️' },
     { label: 'Inquiries', path: 'inquiries', icon: '📩' },
