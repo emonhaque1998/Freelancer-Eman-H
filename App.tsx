@@ -57,6 +57,7 @@ const Login = ({ onLogin }: { onLogin: (u: User) => void }) => {
   const [email, setEmail] = useState('admin@devport.com');
   const [password, setPassword] = useState('password'); 
   const [loading, setLoading] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +78,22 @@ const Login = ({ onLogin }: { onLogin: (u: User) => void }) => {
       toast.error("Database connection failed.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResetToDefault = async () => {
+    if (confirm("Reset Admin to default credentials (admin@devport.com / password)? This is an emergency recovery tool.")) {
+      setIsResetting(true);
+      try {
+        await db.resetAdminAccount();
+        toast.success("Admin account restored to default settings.");
+        setEmail('admin@devport.com');
+        setPassword('password');
+      } catch (err) {
+        toast.error("Emergency reset failed. Firestore error.");
+      } finally {
+        setIsResetting(false);
+      }
     }
   };
 
@@ -105,6 +122,16 @@ const Login = ({ onLogin }: { onLogin: (u: User) => void }) => {
             {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Sign In'}
           </motion.button>
         </form>
+        
+        <div className="mt-8 pt-8 border-t border-slate-50 text-center">
+           <button 
+            onClick={handleResetToDefault}
+            disabled={isResetting}
+            className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-indigo-600 transition disabled:opacity-30"
+           >
+             {isResetting ? 'Restoring System...' : 'Forgot Password? Reset to Default'}
+           </button>
+        </div>
       </motion.div>
     </div>
   );
