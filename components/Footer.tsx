@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Twitter, Linkedin, Github, ArrowUp } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+export const Footer = memo(() => {
   const socials = [
     { name: 'Twitter', icon: Twitter, href: '#' },
     { name: 'LinkedIn', icon: Linkedin, href: '#' },
@@ -61,4 +61,4 @@ export const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});

@@ -1,15 +1,18 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { db } from '../services/db';
 import { User, UserRole } from '../types';
 import { TableRowSkeleton } from '../components/LoadingUI';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { Pagination } from '../components/Pagination';
 
 export const AdminUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     fetchUsers();
@@ -61,6 +64,11 @@ export const AdminUsers: React.FC = () => {
     }
   };
 
+  const paginatedUsers = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return users.slice(start, start + ITEMS_PER_PAGE);
+  }, [users, currentPage]);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -89,13 +97,13 @@ export const AdminUsers: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
-                Array(10).fill(0).map((_, i) => <TableRowSkeleton key={i} />)
+                Array(5).fill(0).map((_, i) => <TableRowSkeleton key={i} />)
               ) : (
-                users.map(u => (
+                paginatedUsers.map(u => (
                   <tr key={u.id} className={`hover:bg-slate-50/50 transition ${updatingId === u.id ? 'opacity-50 grayscale' : ''}`}>
                     <td className="px-8 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={u.avatar} className="w-10 h-10 rounded-xl object-cover shadow-sm" alt="" />
+                        <img src={u.avatar} loading="lazy" className="w-10 h-10 rounded-xl object-cover shadow-sm" alt="" />
                         <div>
                           <div className="font-bold text-slate-900">{u.name}</div>
                           <div className="text-[10px] text-slate-400 font-medium">ID: {u.id}</div>
@@ -138,6 +146,15 @@ export const AdminUsers: React.FC = () => {
         </div>
         {!loading && users.length === 0 && <div className="p-20 text-center text-slate-400 font-medium">No users discovered in system.</div>}
       </div>
+
+      {!loading && users.length > 0 && (
+        <Pagination
+          totalItems={users.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 };

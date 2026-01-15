@@ -1,13 +1,24 @@
+
 import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
-    // Increase the warning limit to 1MB as requested by the Vercel/Vite warning
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        // Manual chunking strategy to split vendor libraries into a separate bundle
         manualChunks(id) {
+          if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+            return 'react-core';
+          }
+          if (id.includes('firebase')) {
+            return 'firebase-suite';
+          }
+          if (id.includes('framer-motion')) {
+            return 'animations';
+          }
+          if (id.includes('lucide-react')) {
+            return 'icons';
+          }
           if (id.includes('node_modules')) {
             return 'vendor';
           }

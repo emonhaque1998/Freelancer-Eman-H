@@ -1,14 +1,17 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { db } from '../services/db';
 import { ContactMessage } from '../types';
 import { Trash2, MailOpen } from 'lucide-react';
+import { Pagination } from '../components/Pagination';
 
 export const AdminMessages: React.FC = () => {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [newNotification, setNewNotification] = useState<ContactMessage | null>(null);
   const lastIdRef = useRef<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
     fetchMessages(true);
@@ -65,7 +68,12 @@ export const AdminMessages: React.FC = () => {
     }
   };
 
-  if (loading && messages.length === 0) return <div className="p-20 text-center text-slate-400">Loading inbox...</div>;
+  const paginatedMessages = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return messages.slice(start, start + ITEMS_PER_PAGE);
+  }, [messages, currentPage]);
+
+  if (loading && messages.length === 0) return <div className="p-20 text-center text-slate-400 font-bold animate-pulse">Synchronizing Inbox...</div>;
 
   return (
     <div className="space-y-6 relative">
@@ -98,7 +106,7 @@ export const AdminMessages: React.FC = () => {
       )}
 
       <div className="space-y-4">
-        {messages.map(m => (
+        {paginatedMessages.map(m => (
           <div key={m.id} className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm animate-slide-down hover:border-indigo-100 transition-all group">
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center gap-4">
@@ -141,6 +149,15 @@ export const AdminMessages: React.FC = () => {
           </div>
         )}
       </div>
+
+      {!loading && messages.length > 0 && (
+        <Pagination
+          totalItems={messages.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 };

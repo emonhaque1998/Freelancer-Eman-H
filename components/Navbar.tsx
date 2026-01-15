@@ -1,5 +1,5 @@
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, memo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { UserRole } from '../types';
 import { LocationContext } from '../App';
@@ -9,7 +9,7 @@ interface NavbarProps {
   onLogout: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
+export const Navbar = memo<NavbarProps>(({ user, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -145,4 +145,4 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
       )}
     </nav>
   );
-};
+});

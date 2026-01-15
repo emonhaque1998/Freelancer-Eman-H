@@ -1,8 +1,8 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { db } from '../services/db';
 import { ServiceInquiry, InquiryMessage, InquiryStatus, UserRole } from '../types';
-import { Trash2, ExternalLink } from 'lucide-react';
+import { Trash2, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 export const AdminInquiries: React.FC = () => {
@@ -12,6 +12,8 @@ export const AdminInquiries: React.FC = () => {
   const [replyText, setReplyText] = useState('');
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -121,25 +123,33 @@ export const AdminInquiries: React.FC = () => {
     }
   };
 
-  if (loading && inquiries.length === 0) return <div className="p-20 text-center text-slate-400">Loading inquiries...</div>;
+  const paginatedInquiries = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return inquiries.slice(start, start + ITEMS_PER_PAGE);
+  }, [inquiries, currentPage]);
+
+  const totalPages = Math.ceil(inquiries.length / ITEMS_PER_PAGE);
+
+  if (loading && inquiries.length === 0) return <div className="p-20 text-center text-slate-400 font-bold animate-pulse">Syncing Orders...</div>;
 
   return (
-    <div className="grid md:grid-cols-3 gap-8">
+    <div className="grid md:grid-cols-3 gap-8 h-full">
       {/* List Column */}
-      <div className={`col-span-1 space-y-4 ${selectedInquiry ? 'hidden md:block' : 'col-span-3'}`}>
+      <div className={`col-span-1 flex flex-col ${selectedInquiry ? 'hidden md:flex' : 'col-span-3'}`}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-slate-900">Service Orders</h2>
           <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md uppercase tracking-widest">Real-time</span>
         </div>
-        <div className="grid gap-3">
-          {inquiries.map(si => (
+        
+        <div className="flex-1 space-y-3">
+          {paginatedInquiries.map(si => (
             <div 
               key={si.id} 
               onClick={() => handleSelectInquiry(si)}
-              className={`p-6 rounded-[32px] border cursor-pointer transition-all duration-300 relative group ${
+              className={`p-6 rounded-[32px] border cursor-pointer transition-all duration-300 relative group animate-slide-down ${
                 selectedInquiry?.id === si.id 
                   ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-100 scale-[1.02]' 
-                  : 'bg-white border-slate-100 hover:border-indigo-200'
+                  : 'bg-white border-slate-100 hover:border-indigo-200 shadow-sm'
               }`}
             >
               <div className="flex justify-between items-start mb-4">
@@ -172,6 +182,29 @@ export const AdminInquiries: React.FC = () => {
           ))}
           {inquiries.length === 0 && <div className="p-20 text-center text-slate-400 bg-white rounded-[40px] border border-dashed border-slate-100">No active orders found.</div>}
         </div>
+
+        {/* List Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-6 px-2">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Page {currentPage} of {totalPages}</span>
+            <div className="flex gap-1">
+              <button 
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(prev => prev - 1)}
+                className="p-2 rounded-lg bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 disabled:opacity-30 transition-all"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button 
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                className="p-2 rounded-lg bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 disabled:opacity-30 transition-all"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Detail Column (Chat Interface) */}
