@@ -35,9 +35,7 @@ export interface AboutData {
   hardwareImageUrl?: string;
   faviconUrl?: string;
   seoThumbnailUrl?: string; 
-  googleVerificationId?: string; // HTML Meta method
-  googleVerificationFileName?: string; // e.g. google653...html
-  googleVerificationToken?: string; // Token inside the file
+  googleConsoleToken?: string; // Standard Verification Token (Meta Tag)
 }
 
 export interface LocationData {
