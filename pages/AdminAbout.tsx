@@ -1,4 +1,5 @@
 
+import { Search } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { db, UPLOADTHING_CONFIG } from '../services/db';
 import { AboutData } from '../types';
@@ -233,6 +234,50 @@ export const AdminAbout: React.FC = () => {
                     <p className="text-xs text-slate-500 line-clamp-1">{formData.overview}</p>
                   </div>
                </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Google Search Console Integration */}
+        <section className="space-y-8 pt-10 border-t border-slate-100">
+           <div className="flex items-center gap-3">
+             <div className="w-1.5 h-6 bg-orange-500 rounded-full"></div>
+             <h3 className="text-orange-600 font-bold uppercase tracking-widest text-xs">Search Engine Optimization Tools</h3>
+          </div>
+
+          <div className="bg-orange-50 p-8 rounded-[32px] border border-orange-100">
+            <div className="flex items-start gap-4 mb-8">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-orange-600 shadow-sm shrink-0">
+                <Search size={24} />
+              </div>
+              <div>
+                <h4 className="text-lg font-black text-slate-900 mb-1">Google Search Console Integration</h4>
+                <p className="text-xs text-slate-500 font-medium max-w-xl">
+                  Connect your website to Google Search. Paste the unique verification ID from the HTML tag method provided by Google Search Console.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <label className="block text-[10px] font-black text-slate-400 uppercase ml-1">Verification Code (google-site-verification)</label>
+              <div className="flex flex-col md:flex-row gap-4 items-center">
+                <input 
+                  value={formData.googleVerificationId || ''} 
+                  onChange={e => setFormData({...formData, googleVerificationId: e.target.value})}
+                  className="flex-1 px-6 py-4 rounded-2xl bg-white border border-orange-200 outline-none focus:ring-4 ring-orange-50 font-mono text-[10px] text-slate-600 transition" 
+                  placeholder="Example: pR_7Tj7v0W6..." 
+                />
+                <a 
+                  href="https://search.google.com/search-console" 
+                  target="_blank" 
+                  className="bg-slate-900 text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition shadow-lg"
+                >
+                  Get ID from Google
+                </a>
+              </div>
+              <p className="text-[10px] text-orange-700 italic font-medium ml-1">
+                * Just paste the "content" value from the tag. Example: &lt;meta name="google-site-verification" content="<b>YOUR_ID_HERE</b>" /&gt;
+              </p>
             </div>
           </div>
         </section>

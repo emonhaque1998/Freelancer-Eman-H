@@ -34,7 +34,8 @@ export interface AboutData {
   workspaceImageUrl?: string;
   hardwareImageUrl?: string;
   faviconUrl?: string;
-  seoThumbnailUrl?: string; // Social sharing image
+  seoThumbnailUrl?: string; 
+  googleVerificationId?: string; // For Google Search Console
 }
 
 export interface LocationData {
@@ -44,7 +45,7 @@ export interface LocationData {
   currencySymbol: string;
   region: string;
   ip: string;
-  exchangeRate: number; // Rate relative to USD
+  exchangeRate: number; 
 }
 
 export interface Project {

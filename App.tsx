@@ -171,18 +171,23 @@ export default function App() {
           if (link) link.href = about.faviconUrl;
         }
 
+        const updateMeta = (property: string, content: string, attr: 'property' | 'name' = 'property') => {
+          let meta = document.querySelector(`meta[${attr}='${property}']`);
+          if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute(attr, property);
+            document.head.appendChild(meta);
+          }
+          meta.setAttribute('content', content);
+        };
+
+        // Google Site Verification Injection
+        if (about.googleVerificationId) {
+          updateMeta('google-site-verification', about.googleVerificationId, 'name');
+        }
+
         // Update Social Share Meta Tags
         if (about.seoThumbnailUrl) {
-          const updateMeta = (property: string, content: string, attr: 'property' | 'name' = 'property') => {
-            let meta = document.querySelector(`meta[${attr}='${property}']`);
-            if (!meta) {
-              meta = document.createElement('meta');
-              meta.setAttribute(attr, property);
-              document.head.appendChild(meta);
-            }
-            meta.setAttribute('content', content);
-          };
-
           updateMeta('og:image', about.seoThumbnailUrl);
           updateMeta('og:title', about.title);
           updateMeta('og:description', about.overview);
