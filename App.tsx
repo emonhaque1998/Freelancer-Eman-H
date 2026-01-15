@@ -37,11 +37,10 @@ const AdminServices = lazy(() => import('./pages/AdminServices').then(m => ({ de
 const AdminMessages = lazy(() => import('./pages/AdminMessages').then(m => ({ default: m.AdminMessages })));
 const AdminInquiries = lazy(() => import('./pages/AdminInquiries').then(m => ({ default: m.AdminInquiries })));
 const AdminAbout = lazy(() => import('./pages/AdminAbout').then(m => ({ default: m.AdminAbout })));
+const AdminProfile = lazy(() => import('./pages/AdminProfile').then(m => ({ default: m.AdminProfile })));
 
 /**
  * AnimatedRoute component wraps routes with motion animations.
- * Fix: Made children optional to resolve TS error where children passed via JSX 
- * are not correctly inferred as present in the props object.
  */
 const AnimatedRoute = ({ children }: { children?: React.ReactNode }) => (
   <motion.div
@@ -115,7 +114,7 @@ const ProtectedRoute = ({ children, user, requiredRole }: { children?: React.Rea
   return <>{children}</>;
 };
 
-function RoutesContainer({ authState, handleAuthSuccess }: { authState: AuthState, handleAuthSuccess: (u: User) => void }) {
+function RoutesContainer({ authState, onUserUpdate, handleAuthSuccess }: { authState: AuthState, onUserUpdate: (u: User) => void, handleAuthSuccess: (u: User) => void }) {
   const location = useLocation();
 
   return (
@@ -137,6 +136,7 @@ function RoutesContainer({ authState, handleAuthSuccess }: { authState: AuthStat
         <Route path="/admin" element={<ProtectedRoute user={authState.user} requiredRole={UserRole.ADMIN}><AdminDashboard /></ProtectedRoute>}>
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="profile" element={<AdminProfile user={authState.user!} onUserUpdate={onUserUpdate} />} />
           <Route path="projects" element={<AdminProjects />} />
           <Route path="services" element={<AdminServices />} />
           <Route path="messages" element={<AdminMessages />} />
@@ -161,7 +161,6 @@ export default function App() {
       const loc = await detectLocation();
       setLocation(loc);
 
-      // Fetch dynamic branding assets (like favicon)
       try {
         const about = await db.getAbout();
         if (about.faviconUrl) {
@@ -187,6 +186,10 @@ export default function App() {
     setAuthState({ user, token: 'token', isAuthenticated: true, isLoading: false }); 
   };
 
+  const handleUserUpdate = (user: User) => {
+    setAuthState(prev => ({ ...prev, user }));
+  };
+
   const handleLogout = () => { 
     localStorage.removeItem('devport_session_user'); 
     setAuthState({ user: null, token: null, isAuthenticated: false, isLoading: false }); 
@@ -201,7 +204,11 @@ export default function App() {
         <Navbar user={authState.user} onLogout={handleLogout} />
         <main className="min-h-[calc(100vh-64px)] overflow-x-hidden">
           <Suspense fallback={<PageLoader />}>
-            <RoutesContainer authState={authState} handleAuthSuccess={handleAuthSuccess} />
+            <RoutesContainer 
+              authState={authState} 
+              onUserUpdate={handleUserUpdate} 
+              handleAuthSuccess={handleAuthSuccess} 
+            />
           </Suspense>
         </main>
         <Footer />

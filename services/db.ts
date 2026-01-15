@@ -19,7 +19,6 @@ import { Project, User, UserRole, ContactMessage, Review, Service, ServiceInquir
 import { MOCK_ADMIN, INITIAL_PROJECTS } from '../constants';
 
 // Professional UploadThing Configuration using Environment Variables
-// This prevents GitHub from blocking the commit due to sensitive keys.
 export const UPLOADTHING_CONFIG = {
   appId: process.env.UPLOADTHING_APP_ID || 'qgsvrkvunn',
   secret: process.env.UPLOADTHING_SECRET || '',
@@ -119,6 +118,11 @@ class FirebaseDB {
 
   async addUser(user: User) {
     await setDoc(doc(firestore, 'users', user.id), { ...user, createdAt: Timestamp.now() });
+  }
+
+  async updateUser(user: Partial<User> & { id: string }) {
+    const userRef = doc(firestore, 'users', user.id);
+    await updateDoc(userRef, user as any);
   }
 
   async updateUserRole(id: string, role: UserRole) {

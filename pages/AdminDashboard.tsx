@@ -21,6 +21,7 @@ export const AdminDashboard: React.FC = () => {
 
   const adminLinks = [
     { label: 'Users', path: 'users', icon: '👥' },
+    { label: 'Admin Profile', path: 'profile', icon: '🆔' },
     { label: 'Manage About', path: 'about-me', icon: '👤' },
     { label: 'Projects', path: 'projects', icon: '📁' },
     { label: 'Services', path: 'services', icon: '🛠️' },
@@ -35,7 +36,7 @@ export const AdminDashboard: React.FC = () => {
           {/* Sidebar */}
           <aside className="w-full md:w-64 space-y-2">
             <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6 text-center">
-              <div className="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-bold mb-3">A</div>
+              <div className="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-bold mb-3 shadow-xl shadow-indigo-100">A</div>
               <h2 className="font-extrabold text-slate-900">Admin Panel</h2>
               <p className="text-[10px] text-indigo-600 font-bold uppercase tracking-widest">Management Suite</p>
             </div>
