@@ -97,17 +97,6 @@ class FirebaseDB {
     }
   }
 
-  /**
-   * Emergency Reset: Restores the admin account to default MOCK_ADMIN credentials.
-   */
-  async resetAdminAccount(): Promise<void> {
-    const adminRef = doc(firestore, 'users', MOCK_ADMIN.id);
-    await setDoc(adminRef, {
-      ...MOCK_ADMIN,
-      createdAt: Timestamp.now()
-    });
-  }
-
   async getAbout(): Promise<AboutData> {
     const snap = await getDoc(doc(firestore, 'about_me', 'me'));
     if (!snap.exists()) throw new Error("About data missing");
