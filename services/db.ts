@@ -1,0 +1,267 @@
+
+import { initializeApp } from 'firebase/app';
+import { 
+  getFirestore, 
+  collection, 
+  doc, 
+  getDoc, 
+  getDocs, 
+  setDoc, 
+  updateDoc, 
+  deleteDoc, 
+  query, 
+  where, 
+  orderBy,
+  limit,
+  Timestamp
+} from 'firebase/firestore';
+import { Project, User, UserRole, ContactMessage, Review, Service, ServiceInquiry, InquiryStatus, InquiryMessage, AboutData } from '../types';
+import { MOCK_ADMIN, INITIAL_PROJECTS } from '../constants';
+
+// Professional UploadThing Configuration using Environment Variables
+// This prevents GitHub from blocking the commit due to sensitive keys.
+export const UPLOADTHING_CONFIG = {
+  appId: process.env.UPLOADTHING_APP_ID || 'qgsvrkvunn',
+  secret: process.env.UPLOADTHING_SECRET || '',
+  baseCdn: 'https://utfs.io/f/'
+};
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC3DmWMnCdzoIkdkHuJc31FqtKTM_hnxVQ",
+  authDomain: "emanhaque-14a71.firebaseapp.com",
+  projectId: "emanhaque-14a71",
+  storageBucket: "emanhaque-14a71.firebasestorage.app",
+  messagingSenderId: "217807667705",
+  appId: "1:217807667705:web:a29a516b4954a20992bd28",
+  measurementId: "G-E6LQ19RTKR"
+};
+
+const app = initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
+
+class FirebaseDB {
+  private isInitialized = false;
+
+  constructor() {
+    this.setupDefaults();
+  }
+
+  private async setupDefaults() {
+    try {
+      const adminDoc = await getDoc(doc(firestore, 'users', MOCK_ADMIN.id));
+      if (!adminDoc.exists()) {
+        await setDoc(doc(firestore, 'users', MOCK_ADMIN.id), {
+          ...MOCK_ADMIN,
+          avatar: `${UPLOADTHING_CONFIG.baseCdn}placeholder-user.png`,
+          createdAt: Timestamp.now()
+        });
+      }
+
+      const aboutDoc = await getDoc(doc(firestore, 'about_me', 'me'));
+      if (!aboutDoc.exists()) {
+        const defaultAbout: AboutData = {
+          id: 'me',
+          name: 'Eman Haque',
+          title: 'Full Stack Developer',
+          overview: 'I transform complex problems into elegant digital solutions.',
+          bio: 'I am a passionate B.Sc Graduate specialized in high-performance web applications and hardware engineering.',
+          vision: 'Bridging the gap between human needs and technical possibilities.',
+          skills: ['React', 'Node.js', 'TypeScript', 'Firebase', 'Hardware Engineering'],
+          values: ['Clean Code', 'Integrity', 'Continuous Innovation'],
+          experience_years: '2+',
+          projects_count: '25+',
+          education: 'B.Sc in Computer Science',
+          location: 'Dhaka, Bangladesh',
+          email: 'admin@devport.com',
+          imageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-profile.png`,
+          workspaceImageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-workspace.png`,
+          hardwareImageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-hardware.png`
+        };
+        await setDoc(doc(firestore, 'about_me', 'me'), defaultAbout);
+      }
+
+      const projectCheck = await getDocs(query(collection(firestore, 'projects'), limit(1)));
+      if (projectCheck.empty) {
+        for (const p of INITIAL_PROJECTS) {
+          await setDoc(doc(firestore, 'projects', p.id), {
+            ...p,
+            imageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-project.png`,
+            createdAt: Timestamp.now()
+          });
+        }
+      }
+
+      this.isInitialized = true;
+    } catch (e) {
+      console.error("Firebase Initialization Error:", e);
+    }
+  }
+
+  async getAbout(): Promise<AboutData> {
+    const snap = await getDoc(doc(firestore, 'about_me', 'me'));
+    if (!snap.exists()) throw new Error("About data missing");
+    return snap.data() as AboutData;
+  }
+
+  async updateAbout(data: AboutData) {
+    await setDoc(doc(firestore, 'about_me', 'me'), data);
+  }
+
+  async getUsers(): Promise<User[]> {
+    const snap = await getDocs(query(collection(firestore, 'users'), orderBy('createdAt', 'desc')));
+    return snap.docs.map(d => ({ 
+      ...d.data(), 
+      id: d.id,
+      createdAt: d.data().createdAt instanceof Timestamp ? d.data().createdAt.toDate().toISOString() : d.data().createdAt 
+    } as User));
+  }
+
+  async addUser(user: User) {
+    await setDoc(doc(firestore, 'users', user.id), { ...user, createdAt: Timestamp.now() });
+  }
+
+  async updateUserRole(id: string, role: UserRole) {
+    await updateDoc(doc(firestore, 'users', id), { role });
+  }
+
+  async deleteUser(id: string) {
+    await deleteDoc(doc(firestore, 'users', id));
+  }
+
+  async getProjects(): Promise<Project[]> {
+    const snap = await getDocs(query(collection(firestore, 'projects'), orderBy('createdAt', 'desc')));
+    return snap.docs.map(d => {
+      const data = d.data();
+      return { 
+        ...data, 
+        id: d.id,
+        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate().toISOString() : data.createdAt 
+      } as Project;
+    });
+  }
+
+  async getProjectById(id: string): Promise<Project | null> {
+    try {
+      const docRef = doc(firestore, 'projects', id);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        return { 
+          ...data, 
+          id: snap.id,
+          createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate().toISOString() : data.createdAt 
+        } as Project;
+      }
+      return null;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async saveProject(project: Project) {
+    const projectRef = doc(firestore, 'projects', project.id);
+    await setDoc(projectRef, {
+      ...project,
+      createdAt: project.createdAt ? Timestamp.fromDate(new Date(project.createdAt)) : Timestamp.now()
+    });
+  }
+
+  async deleteProject(id: string) {
+    await deleteDoc(doc(firestore, 'projects', id));
+  }
+
+  async getServices(): Promise<Service[]> {
+    const snap = await getDocs(collection(firestore, 'services'));
+    return snap.docs.map(d => ({ ...d.data(), id: d.id } as Service));
+  }
+
+  async saveService(service: Service) {
+    await setDoc(doc(firestore, 'services', service.id), service);
+  }
+
+  async deleteService(id: string) {
+    await deleteDoc(doc(firestore, 'services', id));
+  }
+
+  async addServiceInquiry(inquiry: ServiceInquiry) {
+    await setDoc(doc(firestore, 'service_inquiries', inquiry.id), { ...inquiry, createdAt: Timestamp.now() });
+  }
+
+  async deleteInquiry(id: string) {
+    await deleteDoc(doc(firestore, 'service_inquiries', id));
+  }
+
+  async getServiceInquiries(): Promise<ServiceInquiry[]> {
+    const snap = await getDocs(query(collection(firestore, 'service_inquiries'), orderBy('createdAt', 'desc')));
+    return snap.docs.map(d => ({
+      ...d.data(),
+      id: d.id,
+      createdAt: d.data().createdAt instanceof Timestamp ? d.data().createdAt.toDate().toISOString() : d.data().createdAt
+    } as ServiceInquiry));
+  }
+
+  async getServiceInquiriesByClient(clientId: string): Promise<ServiceInquiry[]> {
+    const q = query(collection(firestore, 'service_inquiries'), where('clientId', '==', clientId));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({
+      ...d.data(),
+      id: d.id,
+      createdAt: d.data().createdAt instanceof Timestamp ? d.data().createdAt.toDate().toISOString() : d.data().createdAt
+    } as ServiceInquiry)).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async updateServiceInquiryStatus(id: string, status: InquiryStatus) {
+    await updateDoc(doc(firestore, 'service_inquiries', id), { status });
+  }
+
+  async getReviewsByProject(projectId: string): Promise<Review[]> {
+    const q = query(collection(firestore, 'reviews'), where('projectId', '==', projectId));
+    try {
+      const snap = await getDocs(q);
+      return snap.docs.map(d => ({
+        ...d.data(),
+        id: d.id,
+        createdAt: d.data().createdAt instanceof Timestamp ? d.data().createdAt.toDate().toISOString() : d.data().createdAt
+      } as Review)).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async addReview(review: Review) {
+    await setDoc(doc(firestore, 'reviews', review.id), { ...review, createdAt: Timestamp.now() });
+  }
+
+  async saveMessage(msg: ContactMessage) {
+    await setDoc(doc(firestore, 'messages', msg.id), { ...msg, date: Timestamp.now() });
+  }
+
+  async deleteMessage(id: string) {
+    await deleteDoc(doc(firestore, 'messages', id));
+  }
+  
+  async getMessages(): Promise<ContactMessage[]> {
+    const snap = await getDocs(query(collection(firestore, 'messages'), orderBy('date', 'desc')));
+    return snap.docs.map(d => ({
+      ...d.data(),
+      id: d.id,
+      date: d.data().date instanceof Timestamp ? d.data().date.toDate().toISOString() : d.data().date
+    } as ContactMessage));
+  }
+
+  async getInquiryMessages(inquiryId: string): Promise<InquiryMessage[]> {
+    const q = query(collection(firestore, 'inquiry_messages'), where('inquiryId', '==', inquiryId));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({
+      ...d.data(),
+      id: d.id,
+      createdAt: d.data().createdAt instanceof Timestamp ? d.data().createdAt.toDate().toISOString() : d.data().createdAt
+    } as InquiryMessage)).sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  }
+
+  async addInquiryMessage(msg: InquiryMessage) {
+    await setDoc(doc(firestore, 'inquiry_messages', msg.id), { ...msg, createdAt: Timestamp.now() });
+  }
+}
+
+export const db = new FirebaseDB();

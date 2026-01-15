@@ -1,0 +1,8 @@
+{
+  "name": "Eman Haque - Web Developer",
+  "description": "A professional full-stack portfolio platform for web developers featuring role-based access control, project management, and a user dashboard with AI integration.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

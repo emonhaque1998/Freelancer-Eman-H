@@ -1,0 +1,31 @@
+
+{
+  "name": "eman-haque-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.5",
+    "framer-motion": "^11.11.17",
+    "react-toastify": "^10.0.5",
+    "lucide-react": "^0.505.0",
+    "@google/genai": "^1.3.0",
+    "firebase": "^10.8.0"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
+  },
+  "overrides": {
+    "framer-motion": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  }
+}
