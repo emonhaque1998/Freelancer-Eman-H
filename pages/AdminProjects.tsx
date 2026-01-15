@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../services/db';
 import { Project } from '../types';
+import { toast } from 'react-toastify';
 import { Edit2, Trash2, Plus, Loader2, Image as ImageIcon } from 'lucide-react';
 
 export const AdminProjects: React.FC = () => {
@@ -31,6 +32,7 @@ export const AdminProjects: React.FC = () => {
       setProjects(data);
     } catch (err) {
       console.error("Failed to load projects:", err);
+      toast.error("Error loading project repository.");
     } finally {
       setLoading(false);
     }
@@ -65,10 +67,11 @@ export const AdminProjects: React.FC = () => {
     
     try {
       await db.saveProject(project);
+      toast.success(editingId ? "Project architecture updated." : "New project successfully deployed.");
       resetForm();
       fetchProjects();
     } catch (err) {
-      alert("Error saving project data.");
+      toast.error("Database save operation failed.");
     }
   };
 
@@ -87,8 +90,9 @@ export const AdminProjects: React.FC = () => {
       try {
         await db.deleteProject(id);
         setProjects(prev => prev.filter(p => p.id !== id));
+        toast.info("Project record permanently removed.");
       } catch (err) {
-        alert("Failed to delete project.");
+        toast.error("Deletion failed. Integrity check required.");
       } finally {
         setActionLoading(null);
       }

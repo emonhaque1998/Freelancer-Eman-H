@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { db } from '../services/db';
 import { Project, Review, User } from '../types';
+import { toast } from 'react-toastify';
 
 interface ProjectSingleProps {
   user: User | null;
@@ -43,6 +44,7 @@ export const ProjectSingle: React.FC<ProjectSingleProps> = ({ user }) => {
       }
     } catch (err) {
       console.error("Error loading project data:", err);
+      toast.error("Failed to retrieve project specifications.");
       setProject(null);
     } finally {
       setLoading(false);
@@ -66,11 +68,12 @@ export const ProjectSingle: React.FC<ProjectSingleProps> = ({ user }) => {
       };
       
       await db.addReview(newReview);
+      toast.success("Feedback posted successfully.");
       setComment('');
       setRating(5);
       await loadData();
     } catch (err) {
-      alert("Failed to post review. Try again.");
+      toast.error("Review transmission failed. Try again.");
     } finally {
       setSubmitting(false);
     }

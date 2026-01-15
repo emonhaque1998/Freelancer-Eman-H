@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { db } from '../services/db';
 import { ServiceInquiry, InquiryMessage, InquiryStatus, UserRole } from '../types';
 import { Trash2, ExternalLink } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 export const AdminInquiries: React.FC = () => {
   const [inquiries, setInquiries] = useState<ServiceInquiry[]>([]);
@@ -35,9 +36,14 @@ export const AdminInquiries: React.FC = () => {
   }, [messages]);
 
   const fetchInquiries = async () => {
-    const data = await db.getServiceInquiries();
-    setInquiries(data);
-    setLoading(false);
+    try {
+      const data = await db.getServiceInquiries();
+      setInquiries(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchMessages = async (inquiryId: string) => {
@@ -52,9 +58,14 @@ export const AdminInquiries: React.FC = () => {
 
   const handleUpdateStatus = async (status: InquiryStatus) => {
     if (!selectedInquiry) return;
-    await db.updateServiceInquiryStatus(selectedInquiry.id, status);
-    setSelectedInquiry({...selectedInquiry, status});
-    fetchInquiries();
+    try {
+      await db.updateServiceInquiryStatus(selectedInquiry.id, status);
+      setSelectedInquiry({...selectedInquiry, status});
+      toast.success(`Inquiry status updated to ${status.toUpperCase()}`);
+      fetchInquiries();
+    } catch (err) {
+      toast.error("Status update failed.");
+    }
   };
 
   const handleDeleteInquiry = async (e: React.MouseEvent, id: string) => {
@@ -64,9 +75,9 @@ export const AdminInquiries: React.FC = () => {
         await db.deleteInquiry(id);
         if (selectedInquiry?.id === id) setSelectedInquiry(null);
         setInquiries(prev => prev.filter(si => si.id !== id));
+        toast.info("Inquiry record purged.");
       } catch (err) {
-        console.error("Delete inquiry failed:", err);
-        alert("Failed to delete the inquiry.");
+        toast.error("Purge failed. Database constraint error.");
       }
     }
   };
@@ -93,8 +104,9 @@ export const AdminInquiries: React.FC = () => {
       await db.addInquiryMessage(msg);
       setReplyText('');
       await fetchMessages(selectedInquiry.id);
+      toast.success("Response transmitted.");
     } catch (err) {
-      alert("Error sending message");
+      toast.error("Message delivery failed.");
     }
   };
 

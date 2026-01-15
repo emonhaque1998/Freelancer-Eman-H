@@ -4,6 +4,7 @@ import { db } from '../services/db';
 import { Service } from '../types';
 import { ServiceItemSkeleton } from '../components/LoadingUI';
 import { Edit2, Trash2, Plus, Loader2 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 export const AdminServices: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
@@ -32,6 +33,7 @@ export const AdminServices: React.FC = () => {
       setServices(data);
     } catch (err) {
       console.error("Failed to load services:", err);
+      toast.error("Service catalog retrieval failed.");
     } finally {
       setLoading(false);
     }
@@ -63,10 +65,11 @@ export const AdminServices: React.FC = () => {
 
     try {
       await db.saveService(service);
+      toast.success(editingId ? "Service offering updated." : "New service published to catalog.");
       resetForm();
       fetchServices();
     } catch (err) {
-      alert("Failed to save service. Please try again.");
+      toast.error("Failed to persist service data.");
     }
   };
 
@@ -83,13 +86,11 @@ export const AdminServices: React.FC = () => {
     if (window.confirm('Are you sure you want to delete this service offering? This will also remove any related inquiries.')) {
       setActionLoading(id);
       try {
-        console.log(`Deleting service: ${id}`);
         await db.deleteService(id);
-        // Instant UI Update
         setServices(prev => prev.filter(s => s.id !== id));
+        toast.info("Service offering decommissioned.");
       } catch (err) {
-        console.error("Delete service failed:", err);
-        alert("Could not delete service. Please check your connection.");
+        toast.error("Decommissioning failed. Dependency error.");
       } finally {
         setActionLoading(null);
       }

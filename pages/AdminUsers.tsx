@@ -4,6 +4,7 @@ import { db } from '../services/db';
 import { User, UserRole } from '../types';
 import { TableRowSkeleton } from '../components/LoadingUI';
 import { Trash2 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 export const AdminUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -16,9 +17,14 @@ export const AdminUsers: React.FC = () => {
 
   const fetchUsers = async () => {
     setLoading(true);
-    const data = await db.getUsers();
-    setUsers(data);
-    setLoading(false);
+    try {
+      const data = await db.getUsers();
+      setUsers(data);
+    } catch (err) {
+      toast.error("User repository sync failed.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRoleChange = async (userId: string, newRole: UserRole) => {
@@ -26,8 +32,9 @@ export const AdminUsers: React.FC = () => {
     try {
       await db.updateUserRole(userId, newRole);
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
+      toast.success("User access role upgraded.");
     } catch (err) {
-      alert("Failed to update user role.");
+      toast.error("Access modification rejected by system.");
       console.error(err);
     } finally {
       setUpdatingId(null);
@@ -39,7 +46,7 @@ export const AdminUsers: React.FC = () => {
     const currentAdmin = savedUser ? JSON.parse(savedUser) : null;
     
     if (currentAdmin && currentAdmin.id === userId) {
-      alert("You cannot delete your own account.");
+      toast.warning("Suicide prevented: You cannot delete your own admin account.");
       return;
     }
 
@@ -47,8 +54,9 @@ export const AdminUsers: React.FC = () => {
       try {
         await db.deleteUser(userId);
         setUsers(prev => prev.filter(u => u.id !== userId));
+        toast.info("User identity purged from system.");
       } catch (err) {
-        alert("Failed to delete user.");
+        toast.error("Purge operation failed.");
       }
     }
   };

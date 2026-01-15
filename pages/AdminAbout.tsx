@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { db, UPLOADTHING_CONFIG } from '../services/db';
 import { AboutData } from '../types';
+import { toast } from 'react-toastify';
 import { CloudUpload, ExternalLink, ShieldCheck, Image as ImageIcon, CheckCircle2, Info, Monitor, Cpu, Globe } from 'lucide-react';
 
 export const AdminAbout: React.FC = () => {
@@ -19,6 +20,7 @@ export const AdminAbout: React.FC = () => {
       setFormData(data);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to fetch brand metadata.");
     } finally {
       setLoading(false);
     }
@@ -35,9 +37,9 @@ export const AdminAbout: React.FC = () => {
         const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
         if (link) link.href = formData.faviconUrl;
       }
-      alert("Brand synchronization successful! All images and favicon are now live.");
+      toast.success("Brand synchronization successful! All visuals are live.");
     } catch (err) {
-      alert("Failed to sync brand data.");
+      toast.error("Cloud synchronization failed. Please check your connection.");
     } finally {
       setSaving(false);
     }
