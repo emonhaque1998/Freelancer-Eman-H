@@ -4,4 +4,4 @@ Disallow: /admin
 Disallow: /dashboard
 Disallow: /login
 
-Sitemap: https://emanhaque.dev/sitemap.xml
+Sitemap: https://www.emanhaque.com/sitemap.xml
