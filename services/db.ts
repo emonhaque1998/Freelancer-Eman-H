@@ -75,7 +75,8 @@ class FirebaseDB {
           imageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-profile.png`,
           workspaceImageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-workspace.png`,
           hardwareImageUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-hardware.png`,
-          faviconUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-favicon.png`
+          faviconUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-favicon.png`,
+          seoThumbnailUrl: `${UPLOADTHING_CONFIG.baseCdn}placeholder-project.png`
         };
         await setDoc(doc(firestore, 'about_me', 'me'), defaultAbout);
       }

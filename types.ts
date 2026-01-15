@@ -34,6 +34,7 @@ export interface AboutData {
   workspaceImageUrl?: string;
   hardwareImageUrl?: string;
   faviconUrl?: string;
+  seoThumbnailUrl?: string; // Social sharing image
 }
 
 export interface LocationData {

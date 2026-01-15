@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { db, UPLOADTHING_CONFIG } from '../services/db';
 import { AboutData } from '../types';
 import { toast } from 'react-toastify';
-import { CloudUpload, ExternalLink, ShieldCheck, Image as ImageIcon, CheckCircle2, Info, Monitor, Cpu, Globe } from 'lucide-react';
+import { CloudUpload, ShieldCheck, Image as ImageIcon, CheckCircle2, Info, Monitor, Cpu, Globe, Share2 } from 'lucide-react';
 
 export const AdminAbout: React.FC = () => {
   const [formData, setFormData] = useState<AboutData | null>(null);
@@ -32,7 +32,7 @@ export const AdminAbout: React.FC = () => {
     setSaving(true);
     try {
       await db.updateAbout(formData);
-      // Trigger favicon update in real-time for current session
+      // Trigger favicon update in real-time
       if (formData.faviconUrl) {
         const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
         if (link) link.href = formData.faviconUrl;
@@ -49,7 +49,7 @@ export const AdminAbout: React.FC = () => {
   if (!formData) return null;
 
   return (
-    <div className="space-y-8 animate-slide-down">
+    <div className="space-y-8 animate-slide-down pb-20">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">CMS: Brand Assets</h2>
@@ -182,12 +182,58 @@ export const AdminAbout: React.FC = () => {
               />
             </div>
           </div>
-          
-          <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex items-start gap-3">
-            <Info className="text-indigo-600 shrink-0 mt-0.5" size={16} />
-            <p className="text-xs text-indigo-700 font-medium">
-              <b>Favicon Note:</b> For best results, use a 32x32 or 64x64 PNG or ICO file. After saving, you may need to refresh the browser to see the tab icon change.
-            </p>
+        </section>
+
+        {/* SEO Sharing Section */}
+        <section className="space-y-8 pt-10 border-t border-slate-100">
+           <div className="flex items-center gap-3">
+             <div className="w-1.5 h-6 bg-pink-500 rounded-full"></div>
+             <h3 className="text-pink-600 font-bold uppercase tracking-widest text-xs">SEO & Social Sharing Assets</h3>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12">
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase ml-1">
+                  <Share2 size={14} /> Social Media Thumbnail (OG Image)
+                </label>
+                <p className="text-[10px] text-slate-500 mb-4">This image appears when you share your link on Facebook, Twitter, WhatsApp, etc. Recommended size: 1200x630px.</p>
+                <input 
+                  value={formData.seoThumbnailUrl || ''} 
+                  onChange={e => setFormData({...formData, seoThumbnailUrl: e.target.value})}
+                  className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none outline-none focus:ring-4 ring-pink-50 font-mono text-[10px] text-pink-600 transition shadow-inner" 
+                  placeholder="Paste UTFS URL for social sharing image..." 
+                />
+              </div>
+
+              <div className="p-6 bg-pink-50 rounded-3xl border border-pink-100 flex items-start gap-3">
+                <Info className="text-pink-600 shrink-0 mt-0.5" size={16} />
+                <p className="text-xs text-pink-800 font-medium">
+                  Updating this URL will immediately apply to your website's <b>og:image</b> and <b>twitter:image</b> meta tags.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+               <label className="block text-[10px] font-black text-slate-400 uppercase ml-1">Sharing Preview (Live Simulation)</label>
+               <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                  <div className="aspect-[1.91/1] bg-slate-100 flex items-center justify-center overflow-hidden">
+                    {formData.seoThumbnailUrl && !formData.seoThumbnailUrl.includes('placeholder') ? (
+                      <img src={formData.seoThumbnailUrl} className="w-full h-full object-cover" alt="Social Preview" />
+                    ) : (
+                      <div className="text-slate-300 flex flex-col items-center">
+                        <ImageIcon size={48} strokeWidth={1} />
+                        <span className="text-[10px] font-bold mt-2">No Image Selected</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4 bg-slate-50 border-t border-slate-100">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">EMANHAQUE.DEV</p>
+                    <h4 className="font-bold text-slate-900 text-sm">{formData.title}</h4>
+                    <p className="text-xs text-slate-500 line-clamp-1">{formData.overview}</p>
+                  </div>
+               </div>
+            </div>
           </div>
         </section>
 

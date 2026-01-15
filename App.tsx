@@ -64,7 +64,6 @@ const Login = ({ onLogin }: { onLogin: (u: User) => void }) => {
     try {
       const users = await db.getUsers();
       const normalizedEmail = email.trim().toLowerCase();
-      // Find user by email and verify password
       const user = users.find(u => u.email.toLowerCase() === normalizedEmail);
       
       if (user && user.password === password) {
@@ -165,17 +164,33 @@ export default function App() {
 
       try {
         const about = await db.getAbout();
+        
+        // Update Favicon
         if (about.faviconUrl) {
           const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-          if (link) {
-            link.href = about.faviconUrl;
-          } else {
-            const newLink = document.createElement('link');
-            newLink.rel = 'icon';
-            newLink.href = about.faviconUrl;
-            document.head.appendChild(newLink);
-          }
+          if (link) link.href = about.faviconUrl;
         }
+
+        // Update Social Share Meta Tags
+        if (about.seoThumbnailUrl) {
+          const updateMeta = (property: string, content: string, attr: 'property' | 'name' = 'property') => {
+            let meta = document.querySelector(`meta[${attr}='${property}']`);
+            if (!meta) {
+              meta = document.createElement('meta');
+              meta.setAttribute(attr, property);
+              document.head.appendChild(meta);
+            }
+            meta.setAttribute('content', content);
+          };
+
+          updateMeta('og:image', about.seoThumbnailUrl);
+          updateMeta('og:title', about.title);
+          updateMeta('og:description', about.overview);
+          updateMeta('twitter:image', about.seoThumbnailUrl, 'name');
+          updateMeta('twitter:title', about.title, 'name');
+          updateMeta('twitter:description', about.overview, 'name');
+        }
+
       } catch (err) {
         console.error("Failed to load global branding:", err);
       }
