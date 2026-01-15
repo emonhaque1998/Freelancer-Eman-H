@@ -64,12 +64,14 @@ const Login = ({ onLogin }: { onLogin: (u: User) => void }) => {
     try {
       const users = await db.getUsers();
       const normalizedEmail = email.trim().toLowerCase();
+      // Find user by email and verify password
       const user = users.find(u => u.email.toLowerCase() === normalizedEmail);
-      if (user) {
+      
+      if (user && user.password === password) {
         toast.success(`Welcome back, ${user.name}!`);
         onLogin(user);
       } else {
-        toast.error("Account not found. Check your credentials.");
+        toast.error("Invalid credentials. Please verify your email and password.");
       }
     } catch (err: any) {
       toast.error("Database connection failed.");

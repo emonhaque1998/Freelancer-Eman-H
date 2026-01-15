@@ -29,6 +29,7 @@ export const MOCK_ADMIN: User = {
   id: 'admin-001',
   name: 'John Developer',
   email: 'admin@devport.com',
+  password: 'password',
   role: UserRole.ADMIN,
   createdAt: '2023-01-01T00:00:00Z',
   avatar: 'https://picsum.photos/seed/admin/200',
