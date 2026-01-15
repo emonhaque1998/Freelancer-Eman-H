@@ -3,7 +3,7 @@ import React, { useState, useEffect, Suspense, lazy, createContext } from 'react
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
-import { User, AuthState, UserRole, LocationData } from './types';
+import { User, AuthState, UserRole, LocationData, AboutData } from './types';
 import { db } from './services/db';
 import { detectLocation } from './services/location';
 
@@ -154,6 +154,8 @@ function RoutesContainer({ authState, onUserUpdate, handleAuthSuccess }: { authS
 export default function App() {
   const [authState, setAuthState] = useState<AuthState>({ user: null, token: null, isAuthenticated: false, isLoading: true });
   const [location, setLocation] = useState<LocationData | null>(null);
+  const [aboutData, setAboutData] = useState<AboutData | null>(null);
+  const [isVerificationRequest, setIsVerificationRequest] = useState(false);
   
   useEffect(() => {
     const init = async () => {
@@ -166,7 +168,15 @@ export default function App() {
 
       try {
         const about = await db.getAbout();
+        setAboutData(about);
         
+        // INTERCEPT GOOGLE VERIFICATION FILE REQUEST
+        const path = window.location.pathname.replace(/^\/+/g, ''); // Get filename from path
+        if (about.googleVerificationFileName && path === about.googleVerificationFileName) {
+          setIsVerificationRequest(true);
+          return;
+        }
+
         // Update Favicon
         if (about.faviconUrl) {
           const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
@@ -183,7 +193,7 @@ export default function App() {
           meta.setAttribute('content', content);
         };
 
-        // Google Site Verification Injection
+        // Google Site Verification Injection (Meta Method)
         if (about.googleVerificationId) {
           updateMeta('google-site-verification', about.googleVerificationId, 'name');
         }
@@ -219,6 +229,15 @@ export default function App() {
     setAuthState({ user: null, token: null, isAuthenticated: false, isLoading: false }); 
     toast.info("Logged out successfully.");
   };
+
+  // IF THIS IS A GOOGLE BOT ASKING FOR THE TOKEN FILE
+  if (isVerificationRequest && aboutData?.googleVerificationToken) {
+    return (
+      <div style={{ fontFamily: 'monospace', padding: '20px' }}>
+        {aboutData.googleVerificationToken}
+      </div>
+    );
+  }
 
   if (authState.isLoading) return <PageLoader />;
 
